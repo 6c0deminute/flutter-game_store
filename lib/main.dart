@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:game_store/models/GameObject.dart';
 import 'package:game_store/gamedetailspage.dart';
-import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 void main() {
   runApp(MyApp());
@@ -37,13 +36,25 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<GameObject> games = [
     GameObject(
-        title: "Last of US Part II", imgUrl: "https://imgur.com/VCKIKY4.png"),
+        title: "Last of US Part II",
+        imgUrl:
+            "https://store.playstation.com/store/api/chihiro/00_09_000/container/BR/pt/999/UP9000-CUSA07820_00-THELASTOFUSP2DLX/1593219668000/image?w=240&h=240&bg_color=000000&opacity=100&_version=00_09_000"),
     GameObject(
-        title: "Crash Bandicoot 4", imgUrl: "https://imgur.com/oMKDTtr.png"),
+        title: "Desperados III",
+        imgUrl:
+            "https://store.playstation.com/store/api/chihiro/00_09_000/container/BR/pt/999/UP4389-CUSA11318_00-DES3DELUXEUS0000/1592817985000/image?w=240&h=240&bg_color=000000&opacity=100&_version=00_09_000"),
     GameObject(
-        title: "Horizon Zero Dawn", imgUrl: "https://imgur.com/Y2XcY9x.png"),
+        title: "Horizon Zero Dawn",
+        imgUrl:
+            "https://store.playstation.com/store/api/chihiro/00_09_000/container/BR/pt/999/UP9000-CUSA10237_00-HRZCE00000000000/1593219039000/image?w=240&h=240&bg_color=000000&opacity=100&_version=00_09_000"),
     GameObject(
-        title: "Last of US Part II", imgUrl: "https://imgur.com/VCKIKY4.png"),
+        title: "Grand Theft Auto V",
+        imgUrl:
+            "https://store.playstation.com/store/api/chihiro/00_09_000/container/BR/pt/999/UP1004-CUSA00419_00-PREMIUMPACKOGGW1/1593218843000/image?w=240&h=240&bg_color=000000&opacity=100&_version=00_09_000"),
+    GameObject(
+        title: "Far Cry New Dawn",
+        imgUrl:
+            "https://store.playstation.com/store/api/chihiro/00_09_000/container/BR/pt/999/UP0001-CUSA13917_00-FARCRYBOWMORE000/1593219509000/image?w=240&h=240&bg_color=000000&opacity=100&_version=00_09_000")
   ];
 
   String selectedCategory = 'All';
@@ -93,6 +104,43 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  _categoryContainer() {
+    return Container(
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: <Widget>[
+          _categoryButton("All"),
+          _categoryButton("Action"),
+          _categoryButton("FPS"),
+          _categoryButton("Puzzle"),
+        ],
+      ),
+      height: 50,
+    );
+  }
+
+  _featuredContainer() {
+    return Container(
+        margin: EdgeInsets.only(left: 30, bottom: 10),
+        child: RichText(
+            text:
+                TextSpan(style: TextStyle(color: Colors.blue[600]), children: [
+          TextSpan(
+              text: 'Featured',
+              style: TextStyle(fontSize: 35.0, fontWeight: FontWeight.bold)),
+          TextSpan(text: ' $selectedCategory', style: TextStyle(fontSize: 22)),
+        ])));
+  }
+
+  _gameListContainer() {
+    return Container(
+      padding: EdgeInsets.only(left: 10, right: 10),
+      margin: EdgeInsets.only(top: 20.0, left: 10, right: 10, bottom: 20.0),
+      height: 165,
+      child: GameList(games),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,39 +168,9 @@ class _MyHomePageState extends State<MyHomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               _searchButton(),
-              Container(
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: <Widget>[
-                    _categoryButton("All"),
-                    _categoryButton("Action"),
-                    _categoryButton("FPS"),
-                    _categoryButton("Puzzle"),
-                  ],
-                ),
-                height: 50,
-              ),
-              Container(
-                  margin: EdgeInsets.only(left: 30, bottom: 10),
-                  child: RichText(
-                      text: TextSpan(
-                          style: TextStyle(color: Colors.blue[600]),
-                          children: [
-                        TextSpan(
-                            text: 'Featured',
-                            style: TextStyle(
-                                fontSize: 35.0, fontWeight: FontWeight.bold)),
-                        TextSpan(
-                            text: ' $selectedCategory',
-                            style: TextStyle(fontSize: 22)),
-                      ]))),
-              Container(
-                padding: EdgeInsets.only(left: 10, right: 10),
-                margin: EdgeInsets.only(
-                    top: 20.0, left: 10, right: 10, bottom: 20.0),
-                height: 165,
-                child: GameList(games),
-              ),
+              _categoryContainer(),
+              _featuredContainer(),
+              _gameListContainer(),
               Container(
                   margin: EdgeInsets.only(left: 30, bottom: 10),
                   child: Text(
@@ -168,9 +186,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding: EdgeInsets.only(top: 30),
                 child: ListView(
                   children: <Widget>[
-                    GameCard(games[0]),
-                    GameCard(games[1]),
-                    GameCard(games[2])
+                    ...games.map((e) => GameCard(e)),
+                    ...games.map((e) => GameCard(e))
                   ],
                 ),
               )
@@ -204,7 +221,7 @@ class GameCard extends StatelessWidget {
       height: 90,
       child: Row(
         children: <Widget>[
-          Container(width: 70, child: Image.network(game.imgUrl)),
+          Container(width: 90,  child: Image.network(game.imgUrl)),
           Expanded(
             child: Container(
               padding: EdgeInsets.only(top: 10, left: 10),
@@ -218,7 +235,7 @@ class GameCard extends StatelessWidget {
                     game.title,
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 25, letterSpacing: .9),
+                    style: TextStyle(fontSize: 22, letterSpacing: .9),
                   ),
                   Text(
                     "\$45,00",
@@ -295,7 +312,6 @@ class _GameListState extends State<GameList> {
   }
 }
 
-
 class Game extends StatelessWidget {
   Game(this.index, this.currentPageValue, this.game);
   final int index;
@@ -307,54 +323,27 @@ class Game extends StatelessWidget {
     return Container(
       child: Stack(
         children: <Widget>[
-          Positioned(
-            top: 15,
-            left: 15,
-            child: Transform(
-                transform: Matrix4.identity()
-                  ..setEntry(3, 2, 0.001)
-                  ..scale(1 - (index - currentPageValue).abs() / 7),
-                // ..rotateY(rotateValue),
-                child: Hero(
-                  tag: game.title,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 2, color: Colors.blue),
-                        boxShadow: [
-                          BoxShadow(
-                              offset: Offset(4, 9),
-                              blurRadius: 3,
-                              color: Colors.black54)
-                        ],
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: NetworkImage(game.imgUrl))),
-                    width: rotateValue < 1.6 ? 120 : 0,
-                    height: 150,
-                  ),
-                )),
-          ),
-          Positioned(
-            top: 5,
-            left: 5,
-            child: Container(
-              height: 40,
-              width: 40,
-              child: Center(
-                  child: Text(
-                "9",
-                style: TextStyle(
-                    fontSize: 21,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+          Transform(
+              transform: Matrix4.identity()
+                ..scale(1 - (index - currentPageValue).abs() / 4),
+              child: Hero(
+                tag: game.title,
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.black),
+                      boxShadow: [
+                        BoxShadow(
+                            offset: Offset(4, 9),
+                            blurRadius: 3,
+                            color: Colors.black54)
+                      ],
+                      borderRadius: BorderRadius.circular(10),
+                      image: DecorationImage(
+                          fit: BoxFit.fill, image: NetworkImage(game.imgUrl))),
+                  width: rotateValue < 1.6 ? 120 : 0,
+                  height: 150,
+                ),
               )),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.green,
-              ),
-            ),
-          )
         ],
       ),
     );
